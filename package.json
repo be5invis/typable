@@ -1,0 +1,30 @@
+{
+	"name": "typable",
+	"version": "1.0.0",
+	"description": "Typables and dynamic casting.",
+	"engineStrict": true,
+	"engines": {
+		"node": ">= 8.9.0"
+	},
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"devDependencies": {
+		"@types/jest": "^24.0.22",
+		"jest": "^24.9.0",
+		"rimraf": "~2.6.2",
+		"tslint": "^5.11.0",
+		"typescript": "^3.3.0"
+	},
+	"scripts": {
+		"clean": "rimraf coverage build lib payloads",
+		"build": "tsc -p tsconfig.json",
+		"watch": "tsc -w -p tsconfig.json",
+		"test": "jest",
+		"prepack": "npm run clean && tsc -p tsconfig.release.json"
+	},
+	"author": "Renzhi Li aka. Belleve Invis <belleve@typeof.net>",
+	"license": "MIT",
+	"dependencies": {
+		"tslib": "^1.9.3"
+	}
+}
