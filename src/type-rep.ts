@@ -16,11 +16,11 @@ export class TypeRep<T> {
 	}
 }
 
-export interface TypableInterface<T> {
+export interface TypableInterface {
 	dynamicCast<U>(tr: TypeRep<U>): undefined | U;
 }
 
-export type Typable<T> = T & TypableInterface<T>;
+export type Typable<T = {}> = T & TypableInterface;
 
 export function implDynamicCast<U, T>(
 	tr: TypeRep<U>,
