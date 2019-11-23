@@ -1,42 +1,43 @@
-# Verda
+# `typable`
 
-Verda is a tracing promise runner that allows dynamic dependencies.
+`typable` is a mini library to include dynamic casting in TypeScript.
 
-## Usage
+## Class `TypeRep<T>`
 
-```bash
-npm install verda
-```
+### `new TypeRep<T>(uniqueName:string, …inheritance: TypeRep<any>[])`
 
-After that, prepare a `verdafile.js` under your repository, providing build recipes:
+Creates a `TypeRep` for type `T`.
 
-```js
-const build = require('verda').createBuildAndThenStart();
+### `TypeRep<T>::is<R>(other: TypeRep<R>): this is TypeRep<T&R>`
 
-build.setJournal(`build/.verda-journal`);
+Detects whether this `typeRep` is a sub-type-rep of `other`.
 
-const { oracle, file } = build.ruleTypes;
+### `TypeRep<T>::equal<R>(other: TypeRep<R>):this is TypeRep<T&R>`
 
-const one = oracle("one", async t => 1);
-const two = oracle("two", async t => {
-    const [one] = await t.need(one);
-    return one + 1;
-});
-```
+Detects whether this `typeRep` is equivalent to `other`.
 
-## Strongly-typed rules
+Identical to `typeRep.is(other) && other.is(typeRep)`.
 
-In Verda, all rules are strongly typed:
+## Interface `Typable<T = {}>`
+
+### `Typable<T>::dynamicCast<U>(tr: TypeRep<U>): undefined | U`
+
+This method is required for all `Typable`s to implement: given a `TypeRep<U>`, the object should return an instance of `U`, if `T` is a subtype of `U`, or `undefined` for other cases. `TypeRep<T>::is` could be used in implementation.
+
+## Function `implDynamicCast<U, T>(tr: TypeRep<U>, obj: Typable<T>, trObj: TypeRep<T>): undefined | U`
+
+This function is an utility function used to simplify implementation of `dynamicCast`. Typical use is:
 
 ```typescript
-const build = require('verda').createBuildAndThenStart();
-const { computed, file } = build.ruleTypes;
-const { fu } = build.rules;
-const { run, node, cd, cp, rm } = build.actions;
+const TypeRepOfC = new TypeRep<C>(......);
+class CImpl implements Typable<C> {
+	public a = 1;
+	public b = 2;
+	public c = 3;
 
-const ObjFile = file.glob('build/*.o', async (t, o) => {
-    const c = await t.need(fu`src/${o.name}.c`);
-    await run('gcc', c.full, '-o', o.full);
-});
+	dynamicCast<U>(tr: TypeRep<U>): undefined | U {
+		return implDynamicCast(tr, this, TypeRepOfC);
+	}
+}
 ```
 
