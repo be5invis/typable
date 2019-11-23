@@ -1,6 +1,6 @@
 {
 	"name": "typable",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Typables and dynamic casting.",
 	"engineStrict": true,
 	"engines": {
